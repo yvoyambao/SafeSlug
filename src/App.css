@@ -48,10 +48,25 @@ a {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: transparent;
+}
+
+.App.app-home {
   gap: 40px;
   align-items: center;
   padding: 2.5rem;
-  background: transparent;
+}
+
+.App.app-map {
+  gap: 0;
+  align-items: stretch;
+  padding: 0;
+}
+
+.App.app-contact {
+  gap: 0;
+  align-items: stretch;
+  padding: 0;
 }
 
 .scroll-animate {
@@ -378,6 +393,76 @@ a {
   margin-bottom: 10px;
 }
 
+.contact-page {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  padding: 2.5rem 2.5rem 4rem;
+  display: grid;
+  gap: 24px;
+}
+
+.contact-hero {
+  background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy) 100%);
+  color: #f8fafc;
+  padding: 3rem;
+  border-radius: 32px;
+  box-shadow: 0 30px 70px rgba(4, 30, 66, 0.16);
+  border: 1px solid rgba(251, 191, 36, 0.22);
+}
+
+.contact-hero h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.headshot-placeholder {
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  background: linear-gradient(135deg, #dbeafe, #f8fafc);
+  border: 3px solid rgba(4, 30, 66, 0.12);
+  color: var(--navy);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.contact-name {
+  margin: 0;
+  color: var(--navy-dark);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.contact-email {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+}
+
+.contact-footer {
+  display: flex;
+  justify-content: flex-start;
+}
+
 @media (max-width: 980px) {
   .steps-section .step-grid,
   .features-section .feature-grid,
@@ -387,8 +472,24 @@ a {
 }
 
 @media (max-width: 680px) {
-  .App {
+  .App.app-home {
     padding: 1.5rem;
+  }
+
+  .contact-page {
+    padding: 1.5rem 1.5rem 3rem;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-hero {
+    padding: 2rem;
+  }
+
+  .contact-card {
+    align-items: flex-start;
   }
 
   .hero {

@@ -1,8 +1,15 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
+import NavBar from './components/NavBar'
+import LiveMap from './components/LiveMap'
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('home')
+  const [pendingScrollTarget, setPendingScrollTarget] = useState(null)
+
   useEffect(() => {
+    if (currentPage !== 'home') return
+
     const elements = document.querySelectorAll('.scroll-animate')
     const observer = new IntersectionObserver(
       (entries) => {
@@ -26,11 +33,82 @@ function App() {
       { threshold: 0.15 }
     )
 
-    elements.forEach((element) => observer.observe(element))
+    elements.forEach((element) => {
+      element.classList.add('visible')
+      observer.observe(element)
+    })
     return () => observer.disconnect()
-  }, [])
+  }, [currentPage])
+
+  useEffect(() => {
+    if (currentPage !== 'home' || !pendingScrollTarget) return
+
+    const target = document.getElementById(pendingScrollTarget)
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+    setPendingScrollTarget(null)
+  }, [currentPage, pendingScrollTarget])
+
+  const handleNavigation = (page, scrollTarget = null) => {
+    setCurrentPage(page)
+    setPendingScrollTarget(scrollTarget)
+  }
+
+  if (currentPage === 'map') {
+    return (
+      <div className="App app-map">
+        <NavBar currentPage={currentPage} onNavigate={handleNavigation} />
+        <LiveMap />
+      </div>
+    )
+  }
+
+  if (currentPage === 'contact') {
+    return (
+      <div className="App app-contact">
+        <NavBar currentPage={currentPage} onNavigate={handleNavigation} />
+        <main className="contact-page">
+          <section className="contact-hero scroll-animate visible">
+            <p className="eyebrow">Get in touch</p>
+            <h1>Contact SafeSlug</h1>
+            <p>
+              Reach out to the team directly. These are the current project emails and placeholder headshots
+              for the contact page.
+            </p>
+          </section>
+
+          <section className="contact-grid">
+            <article className="contact-card scroll-animate visible">
+              <div className="headshot-placeholder">CF</div>
+              <div>
+                <p className="contact-name">Chris Fajardo</p>
+                <p className="contact-email">chfajard@ucsc.edu</p>
+              </div>
+            </article>
+
+            <article className="contact-card scroll-animate visible">
+              <div className="headshot-placeholder">YY</div>
+              <div>
+                <p className="contact-name">Yyambao</p>
+                <p className="contact-email">yyambao@ucsc.edu</p>
+              </div>
+            </article>
+          </section>
+
+          <section className="contact-footer scroll-animate visible">
+            <a className="btn btn-primary" href="/" onClick={(e) => { e.preventDefault(); handleNavigation('home') }}>
+              Back to home
+            </a>
+          </section>
+        </main>
+      </div>
+    )
+  }
+
   return (
-    <div className="App">
+    <div className="App app-home">
+      <NavBar currentPage={currentPage} onNavigate={handleNavigation} />
       <header className="hero scroll-animate">
         <p className="eyebrow">UCSC safety monitoring</p>
         <h1>SafeSlug</h1>
@@ -41,7 +119,7 @@ function App() {
         <div className="hero-actions">
           <a className="btn btn-primary" href="#how-it-works">How it works</a>
           <a className="btn btn-secondary" href="#mission">Our mission</a>
-          <a className="btn btn-primary" href="/map.html">Live map</a>
+          <a className="btn btn-primary" href="/" onClick={(e) => { e.preventDefault(); handleNavigation('map') }}>Live map</a>
           <a className="btn btn-secondary" href="#community">Community feed</a>
         </div>
       </header>

@@ -12,6 +12,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.21",
     "firebase": "^10.10.0",
+    "mapbox-gl": "^2.15.0",
     "node-fetch": "^3.3.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
