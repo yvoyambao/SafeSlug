@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import NavBar from './components/NavBar'
 import LiveMap from './components/LiveMap'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
-  const [pendingScrollTarget, setPendingScrollTarget] = useState(null)
+  const pendingScrollTargetRef = useRef(null)
 
   useEffect(() => {
     if (currentPage !== 'home') return
@@ -41,18 +41,25 @@ function App() {
   }, [currentPage])
 
   useEffect(() => {
-    if (currentPage !== 'home' || !pendingScrollTarget) return
+    if (currentPage !== 'home' || !pendingScrollTargetRef.current) return
 
-    const target = document.getElementById(pendingScrollTarget)
+    const target = document.getElementById(pendingScrollTargetRef.current)
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-    setPendingScrollTarget(null)
-  }, [currentPage, pendingScrollTarget])
+    pendingScrollTargetRef.current = null
+  }, [currentPage])
 
   const handleNavigation = (page, scrollTarget = null) => {
+    pendingScrollTargetRef.current = scrollTarget
     setCurrentPage(page)
-    setPendingScrollTarget(scrollTarget)
+
+    if (page === 'home' && scrollTarget && currentPage === 'home') {
+      requestAnimationFrame(() => {
+        document.getElementById(scrollTarget)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        pendingScrollTargetRef.current = null
+      })
+    }
   }
 
   if (currentPage === 'map') {
@@ -106,6 +113,39 @@ function App() {
     )
   }
 
+  if (currentPage === 'community') {
+    return (
+      <div className="App app-community">
+        <NavBar currentPage={currentPage} onNavigate={handleNavigation} />
+        <main className="community-page">
+          <section className="community-hero scroll-animate visible">
+            <p className="eyebrow">Community Feed</p>
+            <h1>Recent local updates</h1>
+            <p>Live reports from UCSC-area users and incident summaries from the community channel.</p>
+          </section>
+
+          <section className="community-feed">
+            <article className="report-item scroll-animate visible">
+              <p className="report-location">Porter Meadow</p>
+              <p>Someone reported a loud disturbance near the dorms late last night.</p>
+              <span>12 minutes ago</span>
+            </article>
+            <article className="report-item scroll-animate visible">
+              <p className="report-location">Mission St</p>
+              <p>A student shared that a vehicle was driving erratically near the intersection.</p>
+              <span>32 minutes ago</span>
+            </article>
+            <article className="report-item scroll-animate visible">
+              <p className="report-location">East Remote</p>
+              <p>Reported suspicious activity around the parking lot after midnight.</p>
+              <span>47 minutes ago</span>
+            </article>
+          </section>
+        </main>
+      </div>
+    )
+  }
+
   return (
     <div className="App app-home">
       <NavBar currentPage={currentPage} onNavigate={handleNavigation} />
@@ -117,10 +157,10 @@ function App() {
           local alerts, plain-English summaries, and community updates before they land on social media.
         </p>
         <div className="hero-actions">
-          <a className="btn btn-primary" href="#how-it-works">How it works</a>
-          <a className="btn btn-secondary" href="#mission">Our mission</a>
-          <a className="btn btn-primary" href="/" onClick={(e) => { e.preventDefault(); handleNavigation('map') }}>Live map</a>
-          <a className="btn btn-secondary" href="#community">Community feed</a>
+          <a className="btn btn-primary" href="#how-it-works">How It Works</a>
+          <a className="btn btn-secondary" href="#mission">Our Mission</a>
+          <a className="btn btn-primary" href="/" onClick={(e) => { e.preventDefault(); handleNavigation('map') }}>Live Map</a>
+          <a className="btn btn-secondary" href="/community" onClick={(e) => { e.preventDefault(); handleNavigation('community') }}>Community Feed</a>
         </div>
       </header>
 
@@ -208,30 +248,6 @@ function App() {
           <div className="stat-card">
             <span>Average response time</span>
             <strong>5 min</strong>
-          </div>
-        </section>
-
-        <section id="community" className="section reports-section scroll-animate">
-          <div className="section-header">
-            <p className="section-label">Community Reports</p>
-            <h2>Recent local updates</h2>
-          </div>
-          <div className="report-feed">
-            <article className="report-item">
-              <p className="report-location">Porter Meadow</p>
-              <p>Someone reported a loud disturbance near the dorms late last night.</p>
-              <span>12 minutes ago</span>
-            </article>
-            <article className="report-item">
-              <p className="report-location">Mission St</p>
-              <p>A student shared that a vehicle was driving erratically near the intersection.</p>
-              <span>32 minutes ago</span>
-            </article>
-            <article className="report-item">
-              <p className="report-location">East Remote</p>
-              <p>Reported suspicious activity around the parking lot after midnight.</p>
-              <span>47 minutes ago</span>
-            </article>
           </div>
         </section>
 
