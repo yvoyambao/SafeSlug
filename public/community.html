@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Feed | SafeSlug</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #ffffff;
+        color: #041e42;
+        font-family: Inter, system-ui, sans-serif;
+      }
+      .page {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+      }
+      .header {
+        margin-bottom: 2rem;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(2.25rem, 4vw, 3rem);
+      }
+      .subtitle {
+        margin: 0.75rem 0 0;
+        color: #475569;
+        line-height: 1.8;
+      }
+      .report-list {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+      .report-card {
+        padding: 1.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        background: #f8fafc;
+        box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06);
+      }
+      .report-location {
+        margin: 0;
+        color: #0f172a;
+        font-weight: 700;
+      }
+      .report-time {
+        display: block;
+        margin-top: 0.75rem;
+        color: #64748b;
+      }
+      .back-link {
+        display: inline-flex;
+        margin-top: 2rem;
+        padding: 0.9rem 1.6rem;
+        border-radius: 999px;
+        background: #041e42;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <p class="eyebrow">Community feed</p>
+        <h1>Recent local updates</h1>
+        <p class="subtitle">Live reports from UCSC-area users and incident summaries from the community channel.</p>
+      </div>
+      <div class="report-list">
+        <div class="report-card">
+          <p class="report-location">Porter Meadow</p>
+          <p>Someone reported a loud disturbance near the dorms late last night.</p>
+          <span class="report-time">12 minutes ago</span>
+        </div>
+        <div class="report-card">
+          <p class="report-location">Mission St</p>
+          <p>A student shared that a vehicle was driving erratically near the intersection.</p>
+          <span class="report-time">32 minutes ago</span>
+        </div>
+        <div class="report-card">
+          <p class="report-location">East Remote</p>
+          <p>Reported suspicious activity around the parking lot after midnight.</p>
+          <span class="report-time">47 minutes ago</span>
+        </div>
+      </div>
+      <a class="back-link" href="/">Back to home</a>
+    </div>
+  </body>
+</html>

@@ -41,7 +41,7 @@ function App() {
         <div className="hero-actions">
           <a className="btn btn-primary" href="#how-it-works">How it works</a>
           <a className="btn btn-secondary" href="#mission">Our mission</a>
-          <a className="btn btn-primary" href="#preview">Live map</a>
+          <a className="btn btn-primary" href="/map.html">Live map</a>
           <a className="btn btn-secondary" href="#community">Community feed</a>
         </div>
       </header>
