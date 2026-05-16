@@ -3,6 +3,7 @@ import './App.css'
 import NavBar from './components/NavBar'
 import LiveMap from './components/LiveMap'
 import MiniMap from './components/MiniMap'
+import AuroraBackground from './components/AuroraBackground'
 import { supabase } from './lib/supabase'
 
 function App() {
@@ -181,6 +182,7 @@ function App() {
   }
 
   return (
+    <AuroraBackground>
     <div className="App app-home">
       <NavBar currentPage={currentPage} onNavigate={handleNavigation} />
       <header className="hero scroll-animate">
@@ -285,6 +287,7 @@ function App() {
 
       </main>
     </div>
+    </AuroraBackground>
   )
 }
 

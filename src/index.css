@@ -52,10 +52,11 @@ img {
 }
 
 h1, h2, h3, h4 {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
   color: var(--text-h);
   letter-spacing: -0.03em;
   line-height: 1.1;
+  font-weight: 300;
 }
 
 #root {

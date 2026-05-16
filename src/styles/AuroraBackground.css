@@ -1,0 +1,108 @@
+.aurora-root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #06091a;
+  overflow: hidden;
+}
+
+.aurora-overlay {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aurora-layer {
+  position: absolute;
+  inset: -10px;
+  opacity: 0.45;
+  will-change: transform;
+  pointer-events: none;
+  filter: blur(10px);
+
+  background-image:
+    repeating-linear-gradient(
+      100deg,
+      #000000 0%, #000000 7%,
+      transparent 10%, transparent 12%,
+      #000000 16%
+    ),
+    repeating-linear-gradient(
+      100deg,
+      #FFC72C 10%,
+      #003C6C 15%,
+      #00508f 20%,
+      #002855 25%,
+      #FFC72C 30%
+    );
+
+  background-size: 300%, 200%;
+  background-position: 50% 50%, 50% 50%;
+
+  -webkit-mask-image: radial-gradient(ellipse at 100% 0%, black 10%, transparent 70%);
+  mask-image: radial-gradient(ellipse at 100% 0%, black 10%, transparent 70%);
+
+  animation: aurora 60s linear infinite;
+}
+
+.aurora-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    repeating-linear-gradient(
+      100deg,
+      #000000 0%, #000000 7%,
+      transparent 10%, transparent 12%,
+      #000000 16%
+    ),
+    repeating-linear-gradient(
+      100deg,
+      #FFC72C 10%,
+      #003C6C 15%,
+      #00508f 20%,
+      #002855 25%,
+      #FFC72C 30%
+    );
+
+  background-size: 200%, 100%;
+  background-attachment: fixed;
+  mix-blend-mode: difference;
+  animation: aurora 60s linear infinite;
+}
+
+@keyframes aurora {
+  from { background-position: 50% 50%, 50% 50%; }
+  to   { background-position: 350% 50%, 350% 50%; }
+}
+
+.aurora-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.aurora-fade-in {
+  animation: aurora-fade-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.2s;
+}
+
+@keyframes aurora-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

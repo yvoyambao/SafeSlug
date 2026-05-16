@@ -423,7 +423,7 @@
 }
 
 .stat-card strong {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 2.4rem;
   color: var(--text-h);
   line-height: 1;
