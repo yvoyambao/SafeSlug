@@ -203,7 +203,8 @@ a {
 .feature-card,
 .stat-card,
 .report-item,
-.student-panel {
+.student-panel,
+.database-panel {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 28px;
@@ -397,6 +398,55 @@ a {
 
 .student-panel li {
   margin-bottom: 10px;
+}
+
+.database-section .database-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.database-state {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.database-state--error {
+  color: #b91c1c;
+}
+
+.database-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.database-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.database-row p,
+.database-row time {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.database-row strong {
+  display: block;
+  color: var(--navy-dark);
+}
+
+.database-row span {
+  font-weight: 600;
+  color: var(--navy);
 }
 
 .contact-page {
