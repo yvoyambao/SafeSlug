@@ -91,7 +91,8 @@ async function askNemoClaw(userMessage) {
 
   const context = [sheriffToday, communityToday, yesterdayLine].filter(Boolean).join('\n') || 'No incidents or reports found for today in this area.'
 
-  const res = await fetch('/nvidia-api/v1/chat/completions', {
+  const apiBase = import.meta.env.VITE_BACKEND_URL || '/nvidia-api'
+  const res = await fetch(`${apiBase}/v1/chat/completions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${NVIDIA_KEY}` },
     body: JSON.stringify({

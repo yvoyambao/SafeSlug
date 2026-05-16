@@ -142,6 +142,25 @@ const httpServer = createServer(async (req, res) => {
     return
   }
 
+  if (req.url?.startsWith('/nvidia-api/')) {
+    const targetPath = req.url.replace('/nvidia-api', '')
+    const body = await new Promise((resolve, reject) => {
+      let data = ''
+      req.on('data', chunk => { data += chunk })
+      req.on('end', () => resolve(data))
+      req.on('error', reject)
+    })
+    const nvidiaRes = await fetch(`https://integrate.api.nvidia.com${targetPath}`, {
+      method: req.method,
+      headers: { 'Content-Type': 'application/json', Authorization: req.headers.authorization },
+      body: body || undefined,
+    })
+    const result = await nvidiaRes.text()
+    res.writeHead(nvidiaRes.status, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' })
+    res.end(result)
+    return
+  }
+
   res.writeHead(404, { 'Content-Type': 'application/json' })
   res.end(JSON.stringify({ error: 'Not found' }))
 })
