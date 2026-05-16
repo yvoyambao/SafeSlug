@@ -16,15 +16,15 @@ const TYPE_COLORS = {
   other:      '#10b981',
 }
 
-function categorizeType(type = '') {
-  const t = type.toLowerCase()
-  if (t.includes('traffic') || t.includes('collision') || t.includes('vehicle') || t.includes('accident')) return 'traffic'
-  if (t.includes('fire') || t.includes('smoke') || t.includes('burn')) return 'fire'
-  if (t.includes('medical') || t.includes('ambulance') || t.includes('injury') || t.includes('ems')) return 'medical'
-  if (t.includes('disturbance') || t.includes('noise') || t.includes('fight')) return 'disturbance'
-  if (t.includes('theft') || t.includes('burglary') || t.includes('robbery') || t.includes('stolen')) return 'theft'
-  if (t.includes('assault') || t.includes('battery') || t.includes('attack')) return 'assault'
-  if (t.includes('suspicious') || t.includes('trespass')) return 'suspicious'
+function categorizeType(type = '', summary = '') {
+  const combined = (type + ' ' + summary).toLowerCase()
+  if (combined.includes('traffic') || combined.includes('collision') || combined.includes('vehicle') || combined.includes('accident') || combined.includes('driving')) return 'traffic'
+  if (combined.includes('fire') || combined.includes('smoke') || combined.includes('burn')) return 'fire'
+  if (combined.includes('medical') || combined.includes('ambulance') || combined.includes('injury') || combined.includes('ems') || combined.includes('overdose')) return 'medical'
+  if (combined.includes('theft') || combined.includes('burglary') || combined.includes('robbery') || combined.includes('stolen') || combined.includes('shopli')) return 'theft'
+  if (combined.includes('assault') || combined.includes('battery') || combined.includes('attack') || combined.includes('weapon')) return 'assault'
+  if (combined.includes('suspicious') || combined.includes('trespass') || combined.includes('prowl')) return 'suspicious'
+  if (combined.includes('disturbance') || combined.includes('noise') || combined.includes('disorder') || combined.includes('fight') || combined.includes('crime')) return 'disturbance'
   return 'other'
 }
 
@@ -57,27 +57,37 @@ export default function LiveMap() {
 
   useEffect(() => {
     let active = true
-    ;(async () => {
+
+    async function loadIncidents() {
       const { data, error } = await supabase
         .from('santa_cruz_calls')
         .select('*')
+        .not('summary', 'is', null)
         .order('inserted_at', { ascending: false })
-        .limit(100)
+        .limit(50)
 
       if (!active) return
-      if (error) {
-        setStatus(`Error: ${error.message}`)
-        return
-      }
+      if (error) { setStatus(`Error: ${error.message}`); return }
 
       const incidents = data || []
       setIncidents(incidents)
       setStatus(incidents.length ? `${incidents.length} incidents loaded` : 'No incidents found')
+      setAvailableCategories([...new Set(incidents.map(i => categorizeType(i.category, i.summary)))])
+    }
 
-      const cats = [...new Set(incidents.map(i => categorizeType(i.type)))]
-      setAvailableCategories(cats)
-    })()
-    return () => { active = false }
+    loadIncidents()
+
+    const channel = supabase
+      .channel('realtime:santa_cruz_calls')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'santa_cruz_calls' }, () => {
+        loadIncidents()
+      })
+      .subscribe()
+
+    return () => {
+      active = false
+      supabase.removeChannel(channel)
+    }
   }, [])
 
   useEffect(() => {
@@ -118,27 +128,32 @@ export default function LiveMap() {
     let active = true
 
     const geocodeAddress = async (address) => {
-      const key = address.trim().toLowerCase()
-      if (!key) return null
-      const cached = geocodeCacheRef.current.get(key)
-      if (cached) return cached
+      try {
+        const key = address.trim().toLowerCase()
+        if (!key) return null
+        const cached = geocodeCacheRef.current.get(key)
+        if (cached) return cached
 
-      const url = new URL(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json`)
-      url.searchParams.set('access_token', accessToken)
-      url.searchParams.set('limit', '1')
-      url.searchParams.set('types', 'address,poi,place,locality')
-      url.searchParams.set('country', 'us')
-      url.searchParams.set('proximity', '-122.0312,36.9741')
+        const query = address.toLowerCase().includes('santa cruz') ? address : `${address}, Santa Cruz, CA`
+        const url = new URL(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json`)
+        url.searchParams.set('access_token', accessToken)
+        url.searchParams.set('limit', '1')
+        url.searchParams.set('types', 'address,poi,place,locality')
+        url.searchParams.set('country', 'us')
+        url.searchParams.set('proximity', '-122.0312,36.9741')
 
-      const response = await fetch(url)
-      if (!response.ok) return null
-      const body = await response.json()
-      const feature = body.features?.[0]
-      if (!feature?.center) return null
+        const response = await fetch(url)
+        if (!response.ok) return null
+        const body = await response.json()
+        const feature = body.features?.[0]
+        if (!feature?.center) return null
 
-      const result = { lng: Number(feature.center[0]), lat: Number(feature.center[1]), label: feature.place_name }
-      geocodeCacheRef.current.set(key, result)
-      return result
+        const result = { lng: Number(feature.center[0]), lat: Number(feature.center[1]), label: feature.place_name }
+        geocodeCacheRef.current.set(key, result)
+        return result
+      } catch {
+        return null
+      }
     }
 
     ;(async () => {
@@ -147,9 +162,9 @@ export default function LiveMap() {
 
         let coords = null
         let geocodedLabel = incident.geocoded_address || ''
-        const incidentType = incident.type || 'Incident'
-        const incidentSummary = incident.summary || incident.raw_text || 'No summary available.'
-        const category = categorizeType(incidentType)
+        const incidentType = incident.category || incident.raw_text || 'Incident'
+        const incidentSummary = incident.summary || 'No summary available.'
+        const category = categorizeType(incident.category, incident.summary)
         const color = TYPE_COLORS[category]
 
         if (incident.longitude != null && incident.latitude != null) {
@@ -171,13 +186,18 @@ export default function LiveMap() {
           ]
         }
 
+        const timestamp = incident.date_text
+          ? new Date(incident.date_text).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })
+          : null
+
         const popupHtml = `
           <div class="map-popup">
             <span class="popup-category" style="background:${color}22;color:${color};border-color:${color}44">${CATEGORY_LABELS[category]}</span>
             <strong class="popup-type">${incidentType}</strong>
-            <p class="popup-address">${incident.address || 'Unknown address'} · ${incident.area || 'Santa Cruz'}</p>
+            <p class="popup-address">${incident.address || 'Unknown address'} · ${incident.area || 'Santa Cruz County'}</p>
+            ${timestamp ? `<p class="popup-time">🕐 ${timestamp}</p>` : ''}
             <p class="popup-summary">${incidentSummary}</p>
-            ${incident.incident_number ? `<span class="popup-id">#${incident.incident_number}</span>` : ''}
+            ${incident.incident_number ? `<span class="popup-id">#${incident.incident_number} · <a href="https://www2.santacruzcountyca.gov/SHF/CristaPublic/" target="_blank" style="color:#64748b">Verify ↗</a></span>` : ''}
           </div>
         `
 

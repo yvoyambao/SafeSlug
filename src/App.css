@@ -585,9 +585,146 @@
   gap: 24px;
 }
 
+.community-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .community-layout {
+    grid-template-columns: 1fr;
+  }
+  .community-sidebar { order: -1; }
+}
+
 .community-feed {
   display: grid;
   gap: 12px;
+}
+
+.feed-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.report-category {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.report-title {
+  font-weight: 600;
+  color: var(--text-h);
+  font-size: 0.97rem;
+  margin: 0;
+}
+
+.report-time {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* Report Form */
+.report-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.panel-title-row {
+  margin-bottom: 1.25rem;
+}
+
+.panel-title-row h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+  color: var(--text-h);
+}
+
+.panel-note {
+  margin: 0;
+  font-size: 0.83rem;
+  color: var(--muted);
+}
+
+.report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-field span {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+  background: var(--surface-raised, #1e293b);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  color: var(--text-h);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  border-color: #2563eb;
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 90px;
+  font-family: inherit;
+}
+
+.form-field select option {
+  background: #1e293b;
+}
+
+.fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.submit-success {
+  background: #10b98120;
+  border: 1px solid #10b981;
+  color: #10b981;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
 }
 
 .report-item {

@@ -1,0 +1,62 @@
+.location-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.location-input {
+  width: 100%;
+  background: var(--surface-raised, #1e293b);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  color: var(--text-h);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.location-input:focus {
+  border-color: #2563eb;
+}
+
+.location-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0.3rem;
+  z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+
+.location-suggestions li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.location-suggestions li:hover {
+  background: rgba(255,255,255,0.07);
+}
+
+.suggestion-main {
+  font-size: 0.87rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.suggestion-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+}

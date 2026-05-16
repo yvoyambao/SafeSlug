@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import LocationInput from './LocationInput'
 
 const categories = ['Crime', 'Fire', 'Medical', 'Traffic', 'Other']
 const severities = ['High', 'Medium', 'Low']
@@ -9,6 +10,7 @@ function ReportForm({ onSubmit, defaultLocation }) {
   const [category, setCategory] = useState(categories[0])
   const [severity, setSeverity] = useState(severities[1])
   const [location, setLocation] = useState('')
+  const [selectedCoords, setSelectedCoords] = useState(null)
 
   useEffect(() => {
     if (defaultLocation) {
@@ -30,7 +32,7 @@ function ReportForm({ onSubmit, defaultLocation }) {
       category,
       severity,
       location: location.trim(),
-      coords: defaultLocation
+      coords: selectedCoords || defaultLocation,
     })
 
     setTitle('')
@@ -87,10 +89,11 @@ function ReportForm({ onSubmit, defaultLocation }) {
 
         <label className="form-field">
           <span>Location</span>
-          <input
+          <LocationInput
             value={location}
-            onChange={(event) => setLocation(event.target.value)}
-            placeholder="Enter a street address or location description"
+            onChange={setLocation}
+            onSelect={(coords) => setSelectedCoords(coords)}
+            placeholder="Search for a street or place..."
           />
         </label>
 

@@ -8,8 +8,9 @@ export async function geocodeAddress(address) {
   if (geocodeCache.has(key)) return geocodeCache.get(key)
   if (!mapboxToken) return null
 
+  const query = address.toLowerCase().includes('santa cruz') ? address : `${address}, Santa Cruz, CA`
   const url = new URL(
-    `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json`
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json`
   )
   url.searchParams.set('access_token', mapboxToken)
   url.searchParams.set('limit', '1')

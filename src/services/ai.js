@@ -16,7 +16,7 @@ export async function summarizeIncident(rawText) {
       Authorization: `Bearer ${import.meta.env.VITE_NEMOCLAW_KEY}`
     },
     body: JSON.stringify({
-      model: 'nemotron',
+      model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning',
       messages: [
         {
           role: 'system',

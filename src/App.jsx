@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import NavBar from './components/NavBar'
 import LiveMap from './components/LiveMap'
+import SafetyChat from './components/SafetyChat'
+import CommunityFeed from './components/CommunityFeed'
 import MiniMap from './components/MiniMap'
 import AuroraBackground from './components/AuroraBackground'
 import { supabase } from './lib/supabase'
@@ -102,6 +104,7 @@ function App() {
       <div className="App app-map">
         <NavBar currentPage={currentPage} onNavigate={handleNavigation} />
         <LiveMap />
+        <SafetyChat />
       </div>
     )
   }
@@ -115,8 +118,7 @@ function App() {
             <p className="eyebrow">Get in touch</p>
             <h1>Contact SafeSlug</h1>
             <p>
-              Reach out to the team directly. These are the current project emails and placeholder headshots
-              for the contact page.
+              Reach out to the team directly.
             </p>
           </section>
 
@@ -132,7 +134,7 @@ function App() {
             <article className="contact-card scroll-animate visible">
               <div className="headshot-placeholder">YY</div>
               <div>
-                <p className="contact-name">Yyambao</p>
+                <p className="contact-name">Yvo Yambao</p>
                 <p className="contact-email">yyambao@ucsc.edu</p>
               </div>
             </article>
@@ -152,31 +154,7 @@ function App() {
     return (
       <div className="App app-community">
         <NavBar currentPage={currentPage} onNavigate={handleNavigation} />
-        <main className="community-page">
-          <section className="community-hero scroll-animate visible">
-            <p className="eyebrow">Community Feed</p>
-            <h1>Recent local updates</h1>
-            <p>Live reports from UCSC-area users and incident summaries from the community channel.</p>
-          </section>
-
-          <section className="community-feed">
-            <article className="report-item scroll-animate visible">
-              <p className="report-location">Porter Meadow</p>
-              <p>Someone reported a loud disturbance near the dorms late last night.</p>
-              <span>12 minutes ago</span>
-            </article>
-            <article className="report-item scroll-animate visible">
-              <p className="report-location">Mission St</p>
-              <p>A student shared that a vehicle was driving erratically near the intersection.</p>
-              <span>32 minutes ago</span>
-            </article>
-            <article className="report-item scroll-animate visible">
-              <p className="report-location">East Remote</p>
-              <p>Reported suspicious activity around the parking lot after midnight.</p>
-              <span>47 minutes ago</span>
-            </article>
-          </section>
-        </main>
+        <CommunityFeed />
       </div>
     )
   }
@@ -227,8 +205,7 @@ function App() {
 
         <section id="mission" className="section features-section scroll-animate">
           <div className="section-header">
-            <p className="section-label">Why SafeSlug</p>
-            <h2>Why this matters</h2>
+            <h2 style={{ fontSize: '2.5rem' }}>Why SafeSlug</h2>
           </div>
           <div className="feature-grid">
             <article className="feature-card">
@@ -256,9 +233,6 @@ function App() {
               <h2>See a sneak peek of the map</h2>
             </div>
             <MiniMap />
-            <p className="preview-copy">
-              A clean, trusted dashboard for the UCSC area. This preview shows how incidents will appear with severity-based pins.
-            </p>
           </div>
         </section>
 

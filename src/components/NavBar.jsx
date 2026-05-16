@@ -34,16 +34,6 @@ export default function NavBar({ currentPage, onNavigate }) {
             Live Map
           </a>
           <a
-            href="#mission"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault()
-              handleNavClick('home', 'mission')
-            }}
-          >
-            About
-          </a>
-          <a
             href="/contact"
             className={`nav-link ${currentPage === 'contact' ? 'active' : ''}`}
             onClick={(e) => {

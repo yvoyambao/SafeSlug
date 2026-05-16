@@ -9,8 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "sync:incidents": "node scripts/sync-scraped-incidents.mjs",
-    "backend:dev": "node server/index.mjs",
-    "backend:sync": "curl -X POST http://localhost:8787/sync"
+    "backend:dev": "node --env-file=.env server/index.mjs",
+    "backend:start": "node server/index.mjs",
+    "backend:sync": "node --env-file=.env -e \"fetch('http://localhost:8787/sync',{method:'POST'}).then(r=>r.json()).then(console.log)\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
