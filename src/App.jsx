@@ -2,10 +2,42 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import NavBar from './components/NavBar'
 import LiveMap from './components/LiveMap'
+import { supabase } from './lib/supabase'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
   const [pendingScrollTarget, setPendingScrollTarget] = useState(null)
+  const [rows, setRows] = useState([])
+  const [rowsError, setRowsError] = useState('')
+  const [rowsLoading, setRowsLoading] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+
+    ;(async () => {
+      const { data, error } = await supabase
+        .from('santa_cruz_calls')
+        .select('address, area, type, incident_number, inserted_at')
+        .order('inserted_at', { ascending: false })
+        .limit(50)
+
+      if (!mounted) return
+
+      if (error) {
+        console.error(error)
+        setRowsError(error.message)
+        setRows([])
+      } else {
+        setRows(data || [])
+      }
+
+      setRowsLoading(false)
+    })()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   useEffect(() => {
     if (currentPage !== 'home') return
@@ -47,7 +79,11 @@ function App() {
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-    setPendingScrollTarget(null)
+    const frame = window.requestAnimationFrame(() => {
+      setPendingScrollTarget(null)
+    })
+
+    return () => window.cancelAnimationFrame(frame)
   }, [currentPage, pendingScrollTarget])
 
   const handleNavigation = (page, scrollTarget = null) => {
@@ -244,6 +280,38 @@ function App() {
               <li>Heard something outside your dorm?</li>
               <li>SafeSlug keeps you informed.</li>
             </ul>
+          </div>
+        </section>
+
+        <section id="supabase-feed" className="section database-section scroll-animate">
+          <div className="section-header">
+            <p className="section-label">Supabase Feed</p>
+            <h2>Recent rows from santa_cruz_calls</h2>
+          </div>
+          <div className="database-panel">
+            {rowsLoading ? (
+              <p className="database-state">Loading recent calls...</p>
+            ) : rowsError ? (
+              <p className="database-state database-state--error">Could not load data: {rowsError}</p>
+            ) : rows.length === 0 ? (
+              <p className="database-state">No rows returned yet.</p>
+            ) : (
+              <ul className="database-list">
+                {rows.map((row) => (
+                  <li key={row.incident_number} className="database-row">
+                    <div>
+                      <strong>{row.address || 'Unknown address'}</strong>
+                      <p>{row.area || 'Unknown area'}</p>
+                    </div>
+                    <div>
+                      <span>{row.type || 'Unknown type'}</span>
+                      <p>{row.incident_number || 'No incident number'}</p>
+                    </div>
+                    <time>{row.inserted_at ? new Date(row.inserted_at).toLocaleString() : 'No timestamp'}</time>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </section>
       </main>

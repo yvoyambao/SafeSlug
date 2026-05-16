@@ -12,7 +12,11 @@ function ReportForm({ onSubmit, defaultLocation }) {
 
   useEffect(() => {
     if (defaultLocation) {
-      setLocation(`${defaultLocation.lat.toFixed(4)}, ${defaultLocation.lng.toFixed(4)}`)
+      const frame = window.requestAnimationFrame(() => {
+        setLocation(`${defaultLocation.lat.toFixed(4)}, ${defaultLocation.lng.toFixed(4)}`)
+      })
+
+      return () => window.cancelAnimationFrame(frame)
     }
   }, [defaultLocation])
 

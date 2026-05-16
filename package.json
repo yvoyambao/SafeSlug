@@ -7,9 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:incidents": "node scripts/sync-scraped-incidents.mjs",
+    "backend:dev": "node server/index.mjs",
+    "backend:sync": "curl -X POST http://localhost:8787/sync"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
     "cheerio": "^1.0.0-rc.21",
     "firebase": "^10.10.0",
     "mapbox-gl": "^2.15.0",
