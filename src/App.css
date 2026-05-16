@@ -3,9 +3,9 @@
   font-family: Inter, system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.75;
-  background: #f8fafc;
+  background: #ffffff;
   color: #0f172a;
-  --bg: #f8fafc;
+  --bg: #ffffff;
   --surface: #ffffff;
   --surface-alt: #e2e8f0;
   --text: #0f172a;
@@ -28,8 +28,8 @@ body,
 
 body {
   margin: 0;
-  background: var(--bg);
   color: var(--text);
+  background: var(--bg);
 }
 
 button,
@@ -51,7 +51,7 @@ a {
   gap: 40px;
   align-items: center;
   padding: 2.5rem;
-  background: var(--bg);
+  background: transparent;
 }
 
 .scroll-animate {
@@ -65,6 +65,12 @@ a {
   transform: translateY(0);
 }
 
+.scroll-animate.out-up {
+  opacity: 0;
+  transform: translateY(-28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
 .hero {
   width: min(1080px, 100%);
   background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy) 100%);
@@ -74,6 +80,7 @@ a {
   box-shadow: 0 30px 70px rgba(4, 30, 66, 0.16);
   border: 1px solid rgba(251, 191, 36, 0.22);
 }
+
 
 .eyebrow {
   color: var(--gold);

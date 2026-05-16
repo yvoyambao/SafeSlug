@@ -7,13 +7,23 @@ function App() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          const el = entry.target
           if (entry.isIntersecting) {
-            entry.target.classList.add('visible')
-            observer.unobserve(entry.target)
+            el.classList.add('visible')
+            el.classList.remove('out-up')
+          } else {
+            // If the element's top is above viewport, user scrolled past it (scrolling down)
+            if (entry.boundingClientRect.top < 0) {
+              el.classList.add('out-up')
+              el.classList.remove('visible')
+            } else {
+              // element is below viewport (not reached yet)
+              el.classList.remove('visible', 'out-up')
+            }
           }
         })
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     )
 
     elements.forEach((element) => observer.observe(element))
@@ -30,6 +40,8 @@ function App() {
         </p>
         <div className="hero-actions">
           <a className="btn btn-primary" href="#how-it-works">How it works</a>
+          <a className="btn btn-secondary" href="#mission">Our mission</a>
+          <a className="btn btn-primary" href="#preview">Live map</a>
           <a className="btn btn-secondary" href="#community">Community feed</a>
         </div>
       </header>
@@ -59,7 +71,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section features-section scroll-animate">
+        <section id="mission" className="section features-section scroll-animate">
           <div className="section-header">
             <p className="section-label">Why SafeSlug</p>
             <h2>Why this matters</h2>
@@ -83,7 +95,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section preview-section scroll-animate">
+        <section id="preview" className="section preview-section scroll-animate">
           <div className="preview-panel">
             <div className="preview-header">
               <p className="section-label">Live Map Preview</p>
