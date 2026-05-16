@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import NavBar from './components/NavBar'
 import LiveMap from './components/LiveMap'
+import MiniMap from './components/MiniMap'
 import { supabase } from './lib/supabase'
 
 function App() {
@@ -10,6 +11,9 @@ function App() {
   const [rows, setRows] = useState([])
   const [rowsError, setRowsError] = useState('')
   const [rowsLoading, setRowsLoading] = useState(true)
+  const [incidentsToday, setIncidentsToday] = useState(null)
+  const [activeUsers, setActiveUsers] = useState(1)
+  const pendingScrollTargetRef = useRef(null)
 
   useEffect(() => {
     let mounted = true
@@ -37,6 +41,31 @@ function App() {
     return () => {
       mounted = false
     }
+  }, [])
+
+  useEffect(() => {
+    const start = new Date()
+    start.setHours(0, 0, 0, 0)
+
+    supabase
+      .from('santa_cruz_calls')
+      .select('incident_number', { count: 'exact', head: true })
+      .gte('inserted_at', start.toISOString())
+      .then(({ count }) => {
+        if (count != null) setIncidentsToday(count)
+      })
+
+    const channel = supabase.channel('presence:home', { config: { presence: { key: crypto.randomUUID() } } })
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState()
+        setActiveUsers(Object.keys(state).length)
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') await channel.track({ online_at: new Date().toISOString() })
+      })
+
+    return () => { supabase.removeChannel(channel) }
   }, [])
 
   useEffect(() => {
@@ -186,7 +215,7 @@ function App() {
     <div className="App app-home">
       <NavBar currentPage={currentPage} onNavigate={handleNavigation} />
       <header className="hero scroll-animate">
-        <p className="eyebrow">UCSC safety monitoring</p>
+        <p className="eyebrow"><span className="eyebrow-badge">UC Santa Cruz</span> Safety Monitoring</p>
         <h1>SafeSlug</h1>
         <p>
           Real-time Santa Cruz incident reporting for UCSC students and Santa Cruz residents. Get trusted
@@ -255,13 +284,7 @@ function App() {
               <p className="section-label">Live Map Preview</p>
               <h2>See a sneak peek of the map</h2>
             </div>
-            <div className="preview-map">
-              <div className="preview-pin pin-high">🚨</div>
-              <div className="preview-pin pin-medium">⚠️</div>
-              <div className="preview-pin pin-low">ℹ️</div>
-              <div className="preview-wave" />
-              <div className="preview-wave preview-wave--alt" />
-            </div>
+            <MiniMap />
             <p className="preview-copy">
               A clean, trusted dashboard for the UCSC area. This preview shows how incidents will appear with severity-based pins.
             </p>
@@ -271,19 +294,11 @@ function App() {
         <section className="section stats-section scroll-animate">
           <div className="stat-card">
             <span>Incidents tracked today</span>
-            <strong>18</strong>
+            <strong>{incidentsToday ?? '—'}</strong>
           </div>
           <div className="stat-card">
             <span>Active users</span>
-            <strong>344</strong>
-          </div>
-          <div className="stat-card">
-            <span>Neighborhoods covered</span>
-            <strong>12</strong>
-          </div>
-          <div className="stat-card">
-            <span>Average response time</span>
-            <strong>5 min</strong>
+            <strong>{activeUsers}</strong>
           </div>
         </section>
 

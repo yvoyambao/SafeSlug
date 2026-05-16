@@ -25,3 +25,7 @@ dist-ssr
 
 # Local env
 .env
+
+# Local Claude instructions
+CLAUDE.md
+.claude/

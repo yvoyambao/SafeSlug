@@ -14,7 +14,7 @@ export default function NavBar({ currentPage, onNavigate }) {
       <div className="nav-container">
         <div className="nav-logo">
           <a href="/" onClick={(e) => { e.preventDefault(); handleNavClick('home') }}>
-            SafeSlug
+            <span className="nav-slug-icon">🐌</span>SafeSlug
           </a>
         </div>
         
